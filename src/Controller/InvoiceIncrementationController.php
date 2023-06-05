@@ -12,10 +12,7 @@ class InvoiceIncrementationController extends AbstractController
 
     private EntityManagerInterface $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
+    public function __construct(EntityManagerInterface $entityManager){}
 
     /**
      * @param Invoice $data
@@ -24,6 +21,7 @@ class InvoiceIncrementationController extends AbstractController
     public function  __invoke(Invoice $data):Invoice
     {
         $data->setChrono($data->getChrono() + 1);
+        $this->entityManager->flush();
         return $data;
     }
 
