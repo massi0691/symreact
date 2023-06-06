@@ -14,26 +14,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups'=> 'users_read'])]
 #[UniqueEntity('email', message: "l'utilisteur ayant cette addresse email existe déja")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['customers_read','invoices_read','sub_inv'])]
+    #[Groups(['customers_read','invoices_read','sub_inv','users_read'])]
 
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['customers_read','invoices_read','sub_inv'])]
+    #[Groups(['customers_read','invoices_read','sub_inv','users_read'])]
     #[Assert\NotBlank(message: "l'email doit etre rensigner ")]
     #[Assert\Email(message: "le mail doit etre valide")]
 
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Groups(['customers_read'])]
+    #[Groups(['customers_read','users_read'])]
 
     private array $roles = [];
 
@@ -45,7 +45,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['customers_read','invoices_read','sub_inv'])]
+    #[Groups(['customers_read','invoices_read','sub_inv','users_read'])]
     #[Assert\NotBlank(message: "Le prénom du customer est obligatoire")]
     #[Assert\Length(min: 3,minMessage: "Le prénom doit faire entre 3 et 255 caractére",max: 255, maxMessage: "Le prénom doit faire entre 3 et 255 caractére")]
 
@@ -53,7 +53,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['customers_read','invoices_read','sub_inv'])]
+    #[Groups(['customers_read','invoices_read','sub_inv','users_read'])]
     #[Assert\NotBlank(message: "Le nom du customer est obligatoire")]
     #[Assert\Length(min: 3,minMessage: "Le nom doit faire entre 3 et 255 caractére",max: 255, maxMessage: "Le prénom doit faire entre 3 et 255 caractére")]
 
