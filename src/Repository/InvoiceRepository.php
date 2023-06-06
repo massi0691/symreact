@@ -3,7 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Invoice;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +40,24 @@ class InvoiceRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function findNextChrono(User $user)
+    {
+        return $this->createQueryBuilder("i")
+               ->select("i.chrono")
+               ->join("i.customer","c")
+               ->where("c.user = :user")
+               ->setParameter("user", $user)
+               ->orderBy("i.chrono", 'DESC')
+               ->setMaxResults(1)
+               ->getQuery()
+               ->getSingleScalarResult() + 1
+            ;
     }
 
 //    /**
