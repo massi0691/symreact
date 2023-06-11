@@ -46,8 +46,8 @@ security:
         - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
         - { path: ^/auth, roles: PUBLIC_ACCESS }
         - { path: ^/api/customers, roles: PUBLIC_ACCESS }
+        - { path: ^/api/invoices, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, methods: [ GET,PUT,DELETE ], roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/api/invoices, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api, roles: PUBLIC_ACCESS }
 
 

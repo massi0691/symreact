@@ -60,7 +60,7 @@ class Invoice
     private ?float $amount = null;
 
     #[ORM\Column]
-    #[Groups(['customers_read', 'customers_read', 'sub_inv'])]
+    #[Groups(['invoices_read', 'customers_read', 'sub_inv'])]
     #[Assert\NotBlank(message: "la date d'envoi doit étre rensignée!")]
     private ?\DateTimeImmutable $sentAt = null;
 
