@@ -2,13 +2,16 @@ import React, {useEffect, useState} from 'react';
 import Pagination from "../components/Pagination"
 import moment from "moment";
 import InvoicesAPI from "../services/InvoicesAPI";
+import {Link} from "react-router-dom";
+import {toast} from "react-toastify";
+import TableLoader from "../components/loaders/TableLoader";
 
 const STATUS_CLASSES = {
     PAID: "success",
     SENT: "primary",
     CANCELED: "danger"
 }
-const STATUS_LABELS =  {
+const STATUS_LABELS = {
     PAID: "payée",
     SENT: "Envoyée",
     CANCELED: "Annuler"
@@ -21,15 +24,15 @@ const InvoicesPage = () => {
     const [loading, setLoading] = useState(true);
 
     const fetchInvoices = async () => {
-       try {
-           const data = await InvoicesAPI.findAll();
-           setInvoices(data);
-           setLoading(false);
-       }catch (e){
-           console.log(e);
-       }
+        try {
+            const data = await InvoicesAPI.findAll();
+            setInvoices(data);
+            setLoading(false);
+        } catch (e) {
+            toast.error('erreur lors des chargements des factures !')
+        }
     }
-    
+
     useEffect(() => {
         fetchInvoices();
     }, []);
@@ -50,11 +53,13 @@ const InvoicesPage = () => {
 
         try {
             await InvoicesAPI.delete(id);
-        }catch (e) {
+            toast.success("La facture a bien été supprimée !")
+        } catch (e) {
+            toast.error("une erreur est survenu.")
             setInvoices(originalInvoices);
         }
     }
-    const itemsPerPage = 20;
+    const itemsPerPage = 10;
 
     const filteredInvoices = search.length > 0 ?
         invoices.filter(invoice => invoice.customer.firstName.toLowerCase().includes(search.toLowerCase())
@@ -64,12 +69,15 @@ const InvoicesPage = () => {
         : invoices;
 
 
+    const paginationInvoices = Pagination.getData(filteredInvoices, currentPage, itemsPerPage)
 
-    const paginationInvoices = Pagination.getData(filteredInvoices,currentPage,itemsPerPage);
-    
+
     return (
         <>
-            <h1>List des Factures</h1>
+            <div className="d-flex justify-content-between align-items-center">
+                <h1>List des Factures</h1>
+                <Link to="/invoices/new" className="btn btn-primary">Créer une facture</Link>
+            </div>
 
             <div className="form-group">
                 <input type="text"
@@ -80,49 +88,52 @@ const InvoicesPage = () => {
                 />
             </div>
 
-
-            <table className="table table-hover">
+            {loading ? <TableLoader/> :
+            <table id="invoicetable" className="table table-hover">
                 <thead>
                 <tr>
                     <th>Numéro</th>
                     <th>Client</th>
-                    <th className='text-center'>Date d'envoi</th>
+                    <th className="text-center">Date d'envoi</th>
                     <th className="text-center">Statut</th>
-                    <th className="text-center">Montant</th>
+                    <th className="text-center">Price</th>
                 </tr>
                 </thead>
                 <tbody>
                 {
-                    loading ? <h4 className='mt-2'> Chargement....</h4>:
-                    paginationInvoices.map(invoice=>{
-                    const {id,chrono, customer:{firstName, lastName},sentAt, status, amount } = invoice;
-                    return <tr key={id}>
+                        paginationInvoices.map(invoice => {
+                            const {id, chrono, customer, sentAt, status, amount} = invoice;
+                            return <tr key={id}>
 
-                        <td>{chrono}</td>
-                        <td>
-                            <a href='#'>{firstName} {lastName}</a>
-                        </td>
-                        <td className="text-center">{formatDate(sentAt)}</td>
-                        <td className="text-center">
-                            <span className= { `badge bg-${STATUS_CLASSES[status]}` }>{STATUS_LABELS[status]}</span>
-                        </td>
-                        <td className="text-center">{amount.toLocaleString()} €</td>
-                        <td>
-                            <button className="btn btn-sm btn-primary mx-1 rounded-3">Editer</button>
-                            <button className="btn btn-sm btn-danger rounded-3" onClick={()=>handleDelete(id)}>Supprimer</button>
-                        </td>
-                    </tr>
-                })}
+                                <td>{chrono}</td>
+                                <td>
+                                    <Link to={"/customers/"+customer.id}>{customer.firstName} {customer.lastName}</Link>
+                                </td>
+                                <td className="text-center">{formatDate(sentAt)}</td>
+                                <td className="text-center">
+                                    <span
+                                        className={`badge bg-${STATUS_CLASSES[status]}`}>{STATUS_LABELS[status]}</span>
+                                </td>
+                                <td className="text-center">{amount.toLocaleString()} €</td>
+                                <td>
+                                    <Link to={`/invoices/${invoice.id}`}
+                                          className="btn btn-sm btn-primary mx-1 rounded-3">Editer</Link>
+                                    <button className="btn btn-sm btn-danger rounded-3"
+                                            onClick={() => handleDelete(id)}>Supprimer
+                                    </button>
+                                </td>
+                            </tr>
+                        })}
 
                 </tbody>
-            </table>
+            </table>}
 
             {
                 <Pagination
-                currentPage={currentPage}
-                length={filteredInvoices.length}
-                setCurrentPage={setCurrentPage}
-                itemsPerpage={itemsPerPage}
+                    currentPage={currentPage}
+                    length={filteredInvoices.length}
+                    setCurrentPage={setCurrentPage}
+                    itemsPerpage={itemsPerPage}
                 />
             }
         </>

@@ -20,7 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     paginationEnabled: true,
     paginationItemsPerPage: 20,
-    normalizationContext: ['groups' => ["invoices_read", "invoices_sub"]]
+    normalizationContext: ['groups' => ["invoices_read", "invoices_sub"]],
+    denormalizationContext: ['disable_type_enforcement'=>true]
 )
 ]
 #[ApiResource(
@@ -56,8 +57,8 @@ class Invoice
     #[ORM\Column]
     #[Groups(['invoices_read', 'customers_read', 'sub_inv'])]
     #[Assert\NotBlank(message: "le montant de la facture est obligatoire ")]
-    #[Assert\Type(type: "numeric", message: "le montant de la facture doit étre un numérique !")]
-    private ?float $amount = null;
+    #[Assert\Type(type:"numeric", message: "le montant de la facture doit étre un numérique !")]
+    private ?float $amount;
 
     #[ORM\Column]
     #[Groups(['invoices_read', 'customers_read', 'sub_inv'])]
@@ -81,6 +82,12 @@ class Invoice
     #[Assert\NotBlank(message: "il faut absolument un chrono pour la facture")]
     #[Assert\Type(type: "integer",message: "le chrono doit ètre un nombre !")]
     private ?int $chrono = null;
+
+    public function __construct()
+    {
+        $this->sentAt = new \DateTimeImmutable('now');
+    }
+
 
     #[Groups(['invoices_read', 'sub_inv'])]
     public function getUser(): User

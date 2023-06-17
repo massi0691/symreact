@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import Pagination from "../components/Pagination";
 import CustomersAPI from "../services/CustomersAPI";
+import {Link} from "react-router-dom";
+import {toast} from "react-toastify";
+import TableLoader from "../components/loaders/TableLoader";
 
 const CustomersPage = () => {
     const [customers, setCustomers] = useState([]);
@@ -9,13 +12,13 @@ const CustomersPage = () => {
     const [search, setSearch] = useState('');
 
     // permet de récupérer les customers
-    const fetchCustomers = async ()=>{
+    const fetchCustomers = async () => {
         try {
             const data = await CustomersAPI.findAll();
             setCustomers(data);
             setLoading(false)
-        }catch (e) {
-            console.log(e.response);
+        } catch (e) {
+            toast.error("impossible de charger les clients");
         }
     }
     // au chargement de du composant , on vas chercher mles customers
@@ -29,9 +32,11 @@ const CustomersPage = () => {
         setCustomers(customers.filter(customer => customer.id !== id));
 
         try {
-           await CustomersAPI.delete(id);
-        }catch (e) {
+            await CustomersAPI.delete(id);
+            toast.success("Le client viens détre supprimer !")
+        } catch (e) {
             setCustomers(originalCustomers);
+            toast.error("La supprission de client a échouer !")
         }
 
     }
@@ -55,11 +60,16 @@ const CustomersPage = () => {
 
     return (
         <>
-            <h1>Listes des clients</h1>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <h1>Listes des clients</h1>
+                <Link to="/customers/new" className="btn btn-primary"> Créer un client</Link>
+            </div>
+
             <div className="form-group">
                 <input type="text" className="form-control" placeholder="Rechercher..." value={search}
                        onChange={handleSearch}/>
             </div>
+            {loading ? <TableLoader/> :
             <table className="table table-hover">
                 <thead>
                 <tr>
@@ -73,13 +83,13 @@ const CustomersPage = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {loading ? <p>Loading...</p> :
-                     paginatedCustomers.map((customer) => {
+                {
+                    paginatedCustomers.map((customer) => {
                         const {id, firstName, lastName, email, company, invoices, totalAmount} = customer;
                         return <tr key={id}>
                             <td>{id}</td>
                             <td>
-                                <a href="#">{firstName} {lastName}</a>
+                                <Link to={"/customers/"+id}>{firstName} {lastName}</Link>
                             </td>
                             <td>{email}</td>
                             <td>{company}</td>
@@ -99,7 +109,7 @@ const CustomersPage = () => {
                     })
                 }
                 </tbody>
-            </table>
+            </table>}
 
             <Pagination
                 currentPage={currentPage}

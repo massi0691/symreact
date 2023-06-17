@@ -1,29 +1,52 @@
-import React, {StrictMode} from "react";
+import React, {StrictMode, useState} from "react";
 import ReactDom from "react-dom/client";
-import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
 import './styles/app.css';
+import {ToastContainer} from "react-toastify";
 import NavBar from "./components/NavBar";
 import HomePage from "./pages/HomePage";
 import CustomersPage from "./pages/CustomersPage";
 import CustomersPageWithPagination from "./pages/CustomersPageWithPagination";
 import InvoicesPage from "./pages/InvoicesPage";
-console.log('hello word');
+import LoginPage from "./pages/LoginPage";
+import AuthAPI from "./services/authAPI";
+import AuthContext from "./contexts/AuthContext";
+import ProtectedRoute from "./components/PrivateRoute";
+import CustomerPage from "./pages/CustomerPage";
+import InvoicePage from "./pages/InvoicePage";
+import RegisterPage from "./pages/RegisterPage";
 
 
 const App = () => {
+    AuthAPI.setup();
 
-    return <Router>
-        <NavBar/>
-        <main className="container pt-5">
+    const [isAuthenticated, setIsAuthenticated] = useState(AuthAPI.isAuthenticated());
 
-            <Routes>
-                <Route path="/" element={<HomePage/>}/>
-                <Route path="/customers" element={<CustomersPage/>}/>
-                <Route path="/invoices" element={<InvoicesPage/>}/>
-            </Routes>
+    return <AuthContext.Provider value={{
+        isAuthenticated,
+        setIsAuthenticated
+    }}>
+        <Router>
+            <NavBar/>
 
-        </main>
-    </Router>;
+            <main className="container pt-5">
+                <Routes>
+                    <Route path="/" element={<HomePage/>}/>
+                    <Route path="/login" element={<LoginPage/>}/>
+                    <Route path='/register' element={<RegisterPage/>}/>
+                    <Route path="/customers" element={<ProtectedRoute><CustomersPage/></ProtectedRoute>}/>
+                    <Route path="/customers/:id" element={<ProtectedRoute><CustomerPage/></ProtectedRoute>}/>
+                    <Route path="/invoices" element={<ProtectedRoute><InvoicesPage/></ProtectedRoute>}/>
+                    <Route path="/invoices/:id" element={<ProtectedRoute><InvoicePage/></ProtectedRoute>}/>
+
+                </Routes>
+            </main>
+        </Router>
+        <ToastContainer position="bottom-left"/>
+
+    </AuthContext.Provider>
+        ;
 };
 
 const rootElement = document.getElementById('app');
