@@ -72,7 +72,6 @@ Encore
     //.autoProvidejQuery()
 Encore.configureDefinePlugin(options=>{
     options["process.env"].API_URL = process.env.API_URL;
-    options["process.env"].HOST = process.env.HOST;
 })
 ;
 
