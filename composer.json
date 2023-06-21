@@ -77,7 +77,7 @@
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
-            "require symfony/maker-bundle --no-interaction": "composer",
+            "require symfony/maker-bundle --no-interaction": "composer-cmd",
             "make:migration --no-interaction": "symfony-cmd",
             "doctrine:migrations:migrate --no-interaction": "symfony-cmd"
         },
