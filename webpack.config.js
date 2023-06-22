@@ -80,18 +80,10 @@ Encore
 //         options["process.env"].API_URL = JSON.stringify(env.parsed.API_URL)
 //         options["process.env"].HOST = JSON.stringify(env.parsed.HOST)
 //     })
-// Encore.configureDefinePlugin(options => {
-//      = process.env.API_URL
-//     options["process.env"].HOST= process.env.HOST
-// })
+Encore.configureDefinePlugin(options => {
+    options["process.env"]= JSON.stringify(process.env)
+})
+;
 
-module.exports = {
-    plugins: [
-        // ...
-        new Encore.addPlugin({
-            'process.env': JSON.stringify(process.env)
-        })
-        // ...
-    ]
-}
+module.exports = Encore.getWebpackConfig();
 
