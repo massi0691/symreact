@@ -71,6 +71,10 @@ Encore
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
 ;
-
+Encore.configureDefinePlugin((options) => {
+    options["process.env"].API_URL = pocess.env.API_URL
+    options["process.env"].HOST= process.env.HOST
+})
+;
 module.exports = Encore.getWebpackConfig();
 
