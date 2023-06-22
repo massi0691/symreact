@@ -72,7 +72,8 @@ Encore
 
 
 Encore.configureDefinePlugin(options => {
-    options["process.env"]= JSON.stringify(process.env)
+    options["process.env.API_URL"]= JSON.stringify(process.env.API_URL)
+    options["process.env.HOST"]= JSON.stringify(process.env.HOST)
 })
 ;
 
