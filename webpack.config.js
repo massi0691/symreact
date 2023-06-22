@@ -71,15 +71,6 @@ Encore
 ;
 
 
-
-// Encore
-//     .configureDefinePlugin(options => {
-//         if (env.error) {
-//             throw env.error;
-//         }
-//         options["process.env"].API_URL = JSON.stringify(env.parsed.API_URL)
-//         options["process.env"].HOST = JSON.stringify(env.parsed.HOST)
-//     })
 Encore.configureDefinePlugin(options => {
     options["process.env"]= JSON.stringify(process.env)
 })
