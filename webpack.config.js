@@ -1,4 +1,4 @@
-require("dotenv").config();
+const env = require("dotenv").config();
 
 const Encore = require('@symfony/webpack-encore');
 
@@ -71,10 +71,22 @@ Encore
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
 ;
-Encore.configureDefinePlugin(options => {
-    options["process.env"].API_URL = process.env.API_URL
-    options["process.env"].HOST= process.env.HOST
-})
+
+
+
+Encore
+    .configureDefinePlugin(options => {
+        console.log(env); //ICI
+        if (env.error) {
+            throw env.error;
+        }
+        options["process.env"].API_URL = JSON.stringify(env.parsed.API_URL)
+        options["process.env"].HOST = JSON.stringify(env.parsed.HOST)
+    })
+// Encore.configureDefinePlugin(options => {
+//      = process.env.API_URL
+//     options["process.env"].HOST= process.env.HOST
+// })
 ;
 module.exports = Encore.getWebpackConfig();
 
