@@ -46,14 +46,14 @@ const RegisterPage = () => {
         toast.success("vous etes désormais inscrit, vous pouvez connecter ! ")
         navigate("/login");
     } catch (e) {
-        // const {violations} = e.response.data;
-        // if (violations) {
-        //     violations.forEach(violation => {
-        //         apiErrors[violation.propertyPath] = violation.message
-        //     });
-        //
-        //     setErrors(apiErrors);
-        // }
+        const {violations} = e.response.data;
+        if (violations) {
+            violations.forEach(violation => {
+                apiErrors[violation.propertyPath] = violation.message
+            });
+
+            setErrors(apiErrors);
+        }
         toast.error("Des erreurs dans votre formulaire !")
     }
 }
