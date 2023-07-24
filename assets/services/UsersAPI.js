@@ -10,7 +10,8 @@ function register(user) {
         },
         url: USERS_API,
         data: user,
-        method: 'POST'
+        method: 'POST',
+        mode:"cors"
     });
 
 }
