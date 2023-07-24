@@ -4,7 +4,6 @@ import {USERS_API} from "../js/config";
 function register(user) {
     return axios({
         headers: {
-            'Access-Control-Allow-Origin': '*',
             Accept: 'application/json',
             'Content-Type': 'application/json'
         },
