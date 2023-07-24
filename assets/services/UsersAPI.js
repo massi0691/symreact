@@ -3,6 +3,10 @@ import {USERS_API} from "../js/config";
 
 function register(user) {
     return axios({
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
         url: USERS_API,
         data: user,
         method: 'POST',

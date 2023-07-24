@@ -16,9 +16,15 @@ import ProtectedRoute from "./components/PrivateRoute";
 import CustomerPage from "./pages/CustomerPage";
 import InvoicePage from "./pages/InvoicePage";
 import RegisterPage from "./pages/RegisterPage";
+import cors from 'cors';
 
-
+const corsOrigin ={
+    origin:'https://symreact-765ea167ead9.herokuapp.com', //or whatever port your frontend is using
+    credentials:true,
+    optionSuccessStatus:200
+}
 const App = () => {
+
     AuthAPI.setup();
 
     const [isAuthenticated, setIsAuthenticated] = useState(AuthAPI.isAuthenticated());
@@ -52,5 +58,7 @@ const App = () => {
 const rootElement = document.getElementById('app');
 const root = ReactDom.createRoot(rootElement);
 root.render(<StrictMode><App/></StrictMode>);
+
+App.use(cors(corsOrigin));
 
 
